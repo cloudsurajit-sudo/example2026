@@ -1,5 +1,16 @@
+
 data "aws_vpc" "myvpc" {
-  id = var.vpc_id
+  tags = {
+    Name = "myvpc"
+  }
+}
+
+output "vpc_id" {
+  value = data.aws_vpc.myvpc.id
+}
+
+output "vpc_cidr_block" {
+  value = data.aws_vpc.myvpc.cidr_block
 }
 
 data "aws_subnets" "selected" {
