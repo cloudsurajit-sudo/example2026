@@ -2,10 +2,10 @@ data "aws_vpc" "selected" {
   default = true
 }
 
-data "aws_subnets" "selected" {
+data "aws_subnets" "all" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.selected.id]
+    values = [data.aws_vpc.selected]
   }
 }
 
@@ -21,7 +21,7 @@ resource "aws_instance" "assignments_instance" {
   count         = var.instance_count
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  subnet_id     = data.aws_subnets.target.id
+  subnet_id     = data.aws_subnet.target.id
   tags = {
     Name = assignment-ec2-instance
   }
