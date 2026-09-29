@@ -5,8 +5,12 @@ data "aws_vpc" "selected" {
 data "aws_subnets" "all" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.selected]
+    values = [data.aws_vpc.selected.id]
   }
+}
+
+data "aws_subnet" "target" {
+  id = data.aws_subnets.all.ids[0] # Grabs the 1st subnet ID from the array
 }
 
 data "aws_ami" "amazon_linux" {
@@ -14,7 +18,7 @@ data "aws_ami" "amazon_linux" {
   owners      = ["amazon"]
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm--x86_64-gp2"]
+    values = ["al2023-ami-2023.*-x86_64"]
   }
 }
 resource "aws_instance" "assignments_instance" {
