@@ -1,22 +1,11 @@
-
-data "aws_vpc" "myvpc" {
-  tags = {
-    Name = "myvpc"
-  }
-}
-
-output "vpc_id" {
-  value = data.aws_vpc.myvpc.id
-}
-
-output "vpc_cidr_block" {
-  value = data.aws_vpc.myvpc.cidr_block
+data "aws_vpc" "selected" {
+    default = true
 }
 
 data "aws_subnets" "selected" {
   filter {
     name   = "vpc-id"
-    values = [var.vpc_id]
+    values = [data.aws_vpc.selected.id]
   }
 }
 
@@ -28,16 +17,16 @@ data "aws_ami" "amazon_linux" {
     values = ["amzn2-ami-hvm--x86_64-gp2"]
   }
 }
-resource "aws_instance" "web" {
+resource "aws_instance" "assignments_instance" {
   count         = var.instance_count
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  subnet_id     = var.subnet_ids[count.index % length(var.subnet_ids)]
+  subnet_id     = data.aws_subnets.target.id
   tags = {
-    Name        = "web-${var.environment}-${count.index}",
-    Environment = var.environment
+    Name        = assignment-ec2-instance
   }
 }
-output "web_ips" {
-  value = aws_instance.web[*].public_ip
+output "instance_id" {
+  description = "The ID of the created EC2 instance"
+  value = aws_instance.assignments_instance.id
 }
