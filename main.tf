@@ -22,7 +22,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 resource "aws_instance" "assignments_instance" {
-  count         = var.instance_count
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
   subnet_id     = data.aws_subnet.target.id
@@ -30,4 +29,8 @@ resource "aws_instance" "assignments_instance" {
 output "instance_id" {
   description = "The ID of the created EC2 instance"
   value       = aws_instance.assignments_instance.id
+}
+output "instance_private_ip" {
+  description = "The private network IP address assigned to the EC2 instance"
+  value       = aws_instance.assignments_instance.private_ip
 }
