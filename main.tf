@@ -26,9 +26,6 @@ resource "aws_instance" "assignments_instance" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
   subnet_id     = data.aws_subnet.target.id
-  tags = {
-    Name = assignment-ec2-instance
-  }
 }
 output "instance_id" {
   description = "The ID of the created EC2 instance"
