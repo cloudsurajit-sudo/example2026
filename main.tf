@@ -1,5 +1,5 @@
 data "aws_vpc" "selected" {
-    default = true
+  default = true
 }
 
 data "aws_subnets" "selected" {
@@ -23,10 +23,10 @@ resource "aws_instance" "assignments_instance" {
   instance_type = var.instance_type
   subnet_id     = data.aws_subnets.target.id
   tags = {
-    Name        = assignment-ec2-instance
+    Name = assignment-ec2-instance
   }
 }
 output "instance_id" {
   description = "The ID of the created EC2 instance"
-  value = aws_instance.assignments_instance.id
+  value       = aws_instance.assignments_instance.id
 }
