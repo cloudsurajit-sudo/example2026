@@ -4,5 +4,6 @@ terraform {
     key            = "global/s3/terraform.tfstate" # Path inside the bucket
     region         = "us-east-1"                   # Your bucket's AWS region
     encrypt        = true                          # Server-side encryption
+    use_lockfile   = true                          # Enable state locking
   }
 }
