@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+        AWS_DEFAULT_REGION    = 'us-east-1'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+        stage('Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage('Plan') {
+            steps {
+                sh 'terraform plan -out=tfplan'
+            }
+            post {
+                success {
+                    // Saves the generated plan file in Jenkins so the Apply stage can use it safely
+                    archiveArtifacts artifacts: 'tfplan'
+                }
+            }
+        }
+        stage('Apply') {
+            input {
+                message 'Approve terraform apply?'
+                ok 'Deploy'
+            }
+            steps {
+                sh 'terraform apply tfplan'
+            }
+        }
+    }
+}
